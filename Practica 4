@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\ProvidesPackage{whilecode2}
+  [04/01/2018 v1.0 - Package for writing programs in WHILE]
+
+\RequirePackage{listings}
+\RequirePackage{suffix}
+\RequirePackage[onelanguage, linesnumbered, noline, resetcount]{algorithm2e}
+
+\LinesNotNumbered
+
+\DeclareOption{linesnumbered}{
+  \LinesNumbered
+}
+\ProcessOptions\relax
+
+% 1. Variables
+\newcommand{\Var}[1]{#1}
+
+% 2. Assignments
+\newcommand{\Zero}[1]{#1 \Assig 0\;}						% Assign 0 to #1
+\WithSuffix\newcommand\Zero*[1]{#1 \Assig 0}				% Assign 0 to #1 (no line break)
+
+\newcommand{\Copy}[2]{#1 \Assig #2\;}						% Assign #2 to #1
+\WithSuffix\newcommand\Copy*[2]{#1 \Assig #2}				% Assign #2 to #1 (no line break)
+
+\newcommand{\Incr}[2]{#1 \Assig #1 $ + \ $#2\;}				% Add #2 to #1
+\WithSuffix\newcommand\Incr*[2]{#1 \Assig #1 $ + \ $#2}	% Add #2 to #1 (no line break)
+
+\newcommand{\Decr}[2]{#1 \Assig #1 $ - \ $#2\;}				% Subtract #2 from #1
+\WithSuffix\newcommand\Decr*[2]{#1 \Assig #1 $ - \ $#2}	% Subtract #2 from #1 (no line break)
+
+% 3. Control structures (AW -> Augmented while)
+\SetKwProg{While}{while}{ do}{od}
+\SetKwProg{DoTimesAW}{do}{ times}{od}			
+
+\newcommand{\IfAW}[2]{\If{#1}{#2}}
+\newcommand{\IfElseAW}[3]{\uIf{#1}{#2}\Else{#3}}
+
+% 4. Commentaries and blank lines
+\newcommand{\WhileBlankLine}{\DontPrintSemicolon\;\PrintSemicolon}
+\SetKwComment{CommentInlineKW}{(*}{*)\WhileBlankLine}
+\newcommand{\CommentInline}[1]{\CommentInlineKW*[f]{#1}}
+\SetKwComment{HeaderComment}{}{}
+\newcommand{\Comment}[1]{\texttt{(*#1*)}\\}
+
+% 5. While code environment
+\newenvironment{whilecode}
+    {\begin{algorithm}
+    }
+    { 
+    \end{algorithm}
+    }
+    
+% 6. While program command
+\newcommand{\whileprogram}[4]{\begin{whilecode}[h]
+\Indm
+\HeaderComment{\textnormal{#1 = $(#2$, #4)}}
+\HeaderComment{\ }
+\HeaderComment{\textnormal{#4:}}
+\Indp
+#3
+\end{whilecode}}
+
+\WithSuffix\newcommand\whileprogram*[4]{{\LinesNumberedHidden\begin{whilecode}[h]
+\Indm
+\HeaderComment{\textnormal{#1 = $(#2$, #4)}}
+\HeaderComment{\ }
+\HeaderComment{\textnormal{#4:}}
+\Indp
+#3
+\end{whilecode}}}
+
+% 7. Input, Output
+\SetKwInput{Input}{Input}
+\SetKwInput{Return}{Output}
+
+% 8. Others
+\newcommand{\Assig}{$ := \ $}
+\newcommand{\SetCodeStyle}{\RestyleAlgo}	% plain (default option), ruled, tworuled, boxed
+
+% 9. DEPRECATED COMMANDS
+\newcommand{\Asig}{\Assig}
+\newcommand{\DefaultVar}[1]{$X_#1$}
+\newcommand{\Inc}[1]{#1 $ + \ 1$}
+\newcommand{\Dec}[1]{#1 $ - \ 1$}
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{fi}
+\SetKwProg{WhileSC}{while}{ do}{od\;}
+\SetKwProg{DoTimes}{do}{ times}{od}
+\SetKwProg{DoTimesSC}{do}{ times}{od\;}
+
+\PackageWarning{\Asig}{'\Asig' is deprecated. You should use '\Assig'}
+
+\usepackage{amssymb} %Necesario para el "No existe"
+\usepackage{amsthm, amsmath}
+% Personalizo mi alfabeto para añadir la N de nº naturales
+\DeclareMathAlphabet{\pazocal}{OMS}{zplm}{m}{n}
+\newcommand{\Lb}{\pazocal{L}}
+
+\usepackage{graphicx}
+    \title{\textbf{Práctica nº 4}}
+    \author{Juan José Rodríguez Hernández}
+    \date{25/12/2022}
+    
+    \addtolength{\topmargin}{-2cm}
+    \addtolength{\textheight}{2cm}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Create the simplest WHILE program that computes the diverge function (with zero arguments) and compute the codification of its code\\} 
+The simplest WHILE program without any arguments that computes the diverge function is the next one \\\\
+Q = (0, $s$) \\
+
+\begin{whilecode}[H]
+  $X_2 \Assig X_1 + 1$\;
+\While{$X_2$ $!= 0$}{
+  $X_1 \Assig 0$\;
+ }
+\end{whilecode}
+The codification of the code $s$ is: \\
+- CODE2N ( "$X_2$ :=$X_1$ + 1 ; while $X_2$ !=0 do $X_1$ :=0 od ") \\
+
+\section{Create an Octave script that enumerates all the vectors\\} 
+We already know that we can establish a biyection between all the vectors and $\mathbb{N}$, so we only need a program with a loop that can print all the set of vectors. Because of that, we make the following code that prints the N first vectors: \\
+
+
+\begin{verbatim}
+function printNvectors(N)
+for i = 0: N - 1 
+disp (['(' num2str(godeldecoding(i))')']) 
+end 
+end 
+\end{verbatim}
+
+\section{Create an Octave script that enumerates all the WHILE programs\\} 
+This case is very similar to activity 2 since there exists a bijection between $\mathbb{N}$ and WHILE programs, so the Octave script this time is: \\
+
+
+\begin{verbatim}
+function printNWhilePrograms(N)
+for i = 0: N - 1 
+disp (N2WHILE(i))
+end 
+end 
+\end{verbatim}
+
+
+\end{document}
+
